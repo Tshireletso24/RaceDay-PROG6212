@@ -25,7 +25,7 @@ jobs:
 
       - name: Check for ERD file
         run: |
-          if ! ls docs/*ERD* 1> /dev/null 2>&1; then
+          if ! find docs -iname "*erd*" | grep -q .; then
             echo "ERROR: No ERD file found in /docs (expected a filename containing 'ERD')."
             exit 1
           fi
@@ -33,7 +33,7 @@ jobs:
 
       - name: Check for SQL script
         run: |
-          if ! ls docs/*.sql 1> /dev/null 2>&1; then
+          if ! find docs -iname "*.sql" | grep -q .; then
             echo "ERROR: No .sql file found in /docs."
             exit 1
           fi
@@ -41,7 +41,7 @@ jobs:
 
       - name: Check for Endpoint Plan document
         run: |
-          if ! ls docs/*ndPoint* docs/*ndpoint* docs/*EndpointPlan* 1> /dev/null 2>&1; then
+          if ! find docs -iname "*endpoint*" | grep -q .; then
             echo "ERROR: No endpoint plan document found in /docs."
             exit 1
           fi
