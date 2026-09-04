@@ -42,7 +42,7 @@ A GitHub Actions workflow validates the repository structure, confirming the `/d
 
 ## Video Demonstration
 
-**Part 1 walkthrough (unlisted YouTube video):** <!-- INSERT YOUTUBE LINK HERE -->
+**Part 1 walkthrough (unlisted YouTube video):** https://youtube.com/shorts/AEKODOYWIJU?si=fPHDPaaOuJMtye71
 
 The video covers:
 - The ERD and the reasoning behind each entity and relationship
@@ -51,4 +51,4 @@ The video covers:
 
 ## AI Usage Disclosure
 
-<!-- If you used AI tools (e.g. for planning, proofreading, or debugging SQL errors), briefly disclose that here, per the assignment instructions. -->
+This project used AI assistance (Claude) for planning guidance on database design decisions, structuring the API endpoint plan, and debugging SQL Server errors encountered while writing and testing the database script. All code was typed and tested independently by the student in SSMS.
