@@ -13,4 +13,4 @@ public class UpdateProfileRequest
 
     [StringLength(500)]
     public string? ProfilePictureUrl { get; set; }
-}
+}   
