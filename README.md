@@ -52,3 +52,35 @@ The video covers:
 ## AI Usage Disclosure
 
 This project used AI assistance (Claude) for planning guidance on database design decisions, structuring the API endpoint plan, and debugging SQL Server errors encountered while writing and testing the database script. All code was typed and tested independently by the student in SSMS.
+cd Part2-API
+dotnet test
+```
+
+There are 64 tests covering registration and login, event management by Organisers, role-based rejection (401 and 403), enrolments being recorded correctly, and results. Tests run against an in-memory database, so they never touch the real one.
+
+### CI/CD
+
+The workflow `.github/workflows/dotnet-ci.yml` builds the solution and runs all unit tests on every push.
+
+**Latest successful build:**
+
+   ![Part 2 CI](docs/ci-part2-success.png)) 
+
+### Deviations from the Part 1 plan
+
+| Change | Reason |
+|---|---|
+| `Status` column added to `Enrolments` (Pending, Confirmed, Cancelled) | Needed for the colour-coded enrolment statuses in Part 3 |
+| New endpoint `PUT /api/enrolments/{id}/status` | Lets Organisers confirm or cancel enrolments |
+| `organiserCode` added to the register request | Prevents users from self-registering as Organisers |
+| `GET /api/events` accepts optional `eventTypeId`, `includePast` and `mine` query parameters | Filtering and the Organiser dashboard |
+| Extra status codes (e.g. 409 on duplicate results or categories with enrolments) | Safer handling of conflicts |
+| Part 2 database is named `RaceDayApiDB` (created by the EF Core migration) | Keeps the Part 1 `RaceDayDB` script intact |
+
+### Video demonstration (Part 2)
+
+**Unlisted YouTube video:** <!-- INSERT PART 2 YOUTUBE LINK HERE -->
+
+### AI usage disclosure (Part 2)
+This project includes assistance from Claude Ai this model  helped reach full productivity in debugging and problem solving.
+<!-- Update this to describe how AI was used in Part 2 (e.g. planning the API structure, drafting code and tests that you reviewed, tested and understood, and debugging build errors). -->
