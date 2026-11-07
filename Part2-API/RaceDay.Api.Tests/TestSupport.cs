@@ -6,6 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RaceDay.Api.Data;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RaceDay.Api.Services;
+
 
 namespace RaceDay.Api.Tests;
 
@@ -53,6 +56,8 @@ public class RaceDayWebApplicationFactory : WebApplicationFactory<Program>
 
             // ...and use an in-memory database instead
             services.AddDbContext<RaceDayDbContext>(options => options.UseInMemoryDatabase(_dbName));
+            services.RemoveAll<IBlobStorageService>();
+            services.AddSingleton<IBlobStorageService, FakeBlobStorageService>();
         });
     }
 
