@@ -50,9 +50,16 @@ public class EventsController : ControllerBase
         if (eventTypeId.HasValue)
             query = query.Where(e => e.EventTypeId == eventTypeId.Value);
 
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            var term = search.Trim();
+            query = query.Where(e => e.Name.Contains(term) || e.Location.Contains(term));
+        }
+
         var events = await query.OrderBy(e => e.EventDate).Select(EventResponse.Projection).ToListAsync();
         return Ok(events);
     }
+
 
     /// <summary>Returns full details for one event, including its categories. Public.</summary>
     /// <response code="200">The event.</response>
