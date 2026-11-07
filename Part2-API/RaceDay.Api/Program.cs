@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RaceDay.Api.Data;
+using RaceDay.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,9 @@ builder.Services.AddControllers();
 // EF Core (Code-First) connected to SQL Server
 builder.Services.AddDbContext<RaceDayDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Azure Blob Storage for event banners and profile pictures
+builder.Services.AddSingleton<IBlobStorageService, BlobStorageService>();
 
 // Server-side session: stores the logged-in user's ID and role
 builder.Services.AddDistributedMemoryCache();
