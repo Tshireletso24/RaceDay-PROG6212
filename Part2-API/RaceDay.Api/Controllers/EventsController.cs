@@ -28,7 +28,7 @@ public class EventsController : ControllerBase
     [ProducesResponseType(typeof(List<EventResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
-    public async Task<IActionResult> GetEvents([FromQuery] int? eventTypeId, [FromQuery] bool includePast = false, [FromQuery] bool mine = false)
+    public async Task<IActionResult> GetEvents([FromQuery] int? eventTypeId, [FromQuery] string? search, [FromQuery] bool includePast = false, [FromQuery] bool mine = false)
     {
         var query = _db.Events.AsQueryable();
 

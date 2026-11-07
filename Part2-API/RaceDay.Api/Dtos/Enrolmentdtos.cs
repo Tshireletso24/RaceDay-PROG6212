@@ -32,6 +32,9 @@ public class EnrolmentResponse
     public string ParticipantName { get; set; } = string.Empty;
     public string Status { get; set; } = string.Empty;
     public DateTime EnrolmentDate { get; set; }
+    public string? FinishTime { get; set; }
+    public int? FinishPosition { get; set; }
+    public bool HasResult => FinishPosition.HasValue;
 
     public static readonly Expression<Func<Enrolment, EnrolmentResponse>> Projection = e => new EnrolmentResponse
     {
@@ -44,6 +47,8 @@ public class EnrolmentResponse
         ParticipantId = e.ParticipantId,
         ParticipantName = e.Participant!.FullName,
         Status = e.Status,
-        EnrolmentDate = e.EnrolmentDate
+        EnrolmentDate = e.EnrolmentDate,
+        FinishTime = e.Result != null ? e.Result.FinishTime : null,
+        FinishPosition = e.Result != null ? (int?)e.Result.FinishPosition : null
     };
 }
