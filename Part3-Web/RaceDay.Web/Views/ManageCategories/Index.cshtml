@@ -1,0 +1,95 @@
+@model CategoriesPageViewModel
+@{
+    ViewData["Title"] = "Categories";
+}
+@functions {
+    static string AgeRange(CategoryDto c) =>
+        c.MinAge.HasValue && c.MaxAge.HasValue ? $"{c.MinAge}-{c.MaxAge} years"
+        : c.MinAge.HasValue ? $"{c.MinAge}+ years"
+        : c.MaxAge.HasValue ? $"Up to {c.MaxAge} years"
+        : "All ages";
+}
+
+<div class="mb-3"><a asp-controller="ManageEvents" asp-action="Index" class="text-decoration-none">&larr; All events</a></div>
+<h1 class="section-title mb-1">Categories</h1>
+<p class="text-muted mb-4">@Model.Event.Name &middot; @Model.Event.EventDate.ToString("d MMM yyyy")</p>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        @if (Model.Event.Categories.Count == 0)
+        {
+            <div class="card">
+                <div class="card-body text-center py-5">
+                    <h2 class="h5">No categories yet</h2>
+                    <p class="text-muted mb-0">Add at least one so participants can enter this event.</p>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-raceday align-middle">
+                    <thead>
+                        <tr><th>Category</th><th>Ages</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.Event.Categories)
+                        {
+                            <tr>
+                                <td class="fw-bold">@c.CategoryName</td>
+                                <td>@AgeRange(c)</td>
+                                <td class="text-end text-nowrap">
+                                    <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@c.CategoryId" asp-route-eventId="@Model.Event.EventId">Edit</a>
+                                    <form asp-action="Delete" method="post" class="d-inline"
+                                          onsubmit="return confirm('Remove this category?');">
+                                        <input type="hidden" name="id" value="@c.CategoryId" />
+                                        <input type="hidden" name="eventId" value="@Model.Event.EventId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h4">Add a category</h2>
+                <p class="text-muted small">For example: 10km, 21km, Under 20, Senior 60+. Ages are optional.</p>
+
+                <form asp-action="Add" method="post" novalidate>
+                    <input type="hidden" asp-for="NewCategory.EventId" />
+
+                    <div class="mb-3">
+                        <label asp-for="NewCategory.CategoryName" class="form-label"></label>
+                        <input asp-for="NewCategory.CategoryName" class="form-control" />
+                        <span asp-validation-for="NewCategory.CategoryName" class="text-danger"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label asp-for="NewCategory.MinAge" class="form-label"></label>
+                            <input asp-for="NewCategory.MinAge" type="number" min="0" max="120" class="form-control" />
+                            <span asp-validation-for="NewCategory.MinAge" class="text-danger"></span>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label asp-for="NewCategory.MaxAge" class="form-label"></label>
+                            <input asp-for="NewCategory.MaxAge" type="number" min="0" max="120" class="form-control" />
+                            <span asp-validation-for="NewCategory.MaxAge" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Add category</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
