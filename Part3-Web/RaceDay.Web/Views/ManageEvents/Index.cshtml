@@ -1,0 +1,71 @@
+@model List<EventDto>
+@{
+    ViewData["Title"] = "Manage events";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <h1 class="section-title mb-0">Manage events</h1>
+    <a class="btn btn-primary" asp-action="Create">+ New event</a>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <h2 class="h4">You haven't created any events</h2>
+            <p class="text-muted">Add an event, then give it categories so runners can enter.</p>
+            <a class="btn btn-primary" asp-action="Create">Create an event</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-raceday align-middle">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>Event</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th class="text-center">Enrolled</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model)
+                {
+                    <tr>
+                        <td style="width:80px">
+                            @if (!string.IsNullOrEmpty(e.ImageUrl))
+                            {
+                                <img src="@e.ImageUrl" class="event-thumb" alt="" />
+                            }
+                            else
+                            {
+                                <span class="event-thumb event-thumb-empty"></span>
+                            }
+                        </td>
+                        <td>
+                            <strong>@e.Name</strong>
+                            <div class="small text-muted">@e.Location &middot; @e.DistanceKm.ToString("0.##") km</div>
+                        </td>
+                        <td>@e.EventDate.ToString("d MMM yyyy HH:mm")</td>
+                        <td>@e.EventTypeName</td>
+                        <td class="text-center fw-bold">@e.EnrolmentCount</td>
+                        <td class="text-end text-nowrap">
+                            <a class="btn btn-sm btn-outline-primary" asp-action="Edit" asp-route-id="@e.EventId">Edit</a>
+                            <a class="btn btn-sm btn-outline-primary" asp-controller="ManageCategories" asp-action="Index" asp-route-id="@e.EventId">Categories</a>
+                            <a class="btn btn-sm btn-outline-primary" asp-controller="ManageEnrolments" asp-action="Index" asp-route-id="@e.EventId">Enrolments</a>
+                            <a class="btn btn-sm btn-outline-primary" asp-controller="ManageResults" asp-action="Index" asp-route-id="@e.EventId">Results</a>
+                            <form asp-action="Delete" asp-route-id="@e.EventId" method="post" class="d-inline"
+                                  onsubmit="return confirm('Delete this event and all of its categories and enrolments? This cannot be undone.');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
