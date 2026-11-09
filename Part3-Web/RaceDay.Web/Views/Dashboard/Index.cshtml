@@ -1,0 +1,106 @@
+@model DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+    <h1 class="section-title mb-0">Organiser dashboard</h1>
+    <a class="btn btn-primary" asp-controller="ManageEvents" asp-action="Create">+ New event</a>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="stat-tile">
+            <div class="stat-number">@Model.TotalEvents</div>
+            <div class="stat-label">Events created</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-tile">
+            <div class="stat-number">@Model.UpcomingEvents</div>
+            <div class="stat-label">Upcoming</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-tile">
+            <div class="stat-number">@Model.TotalEnrolments</div>
+            <div class="stat-label">Total enrolments</div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="stat-tile">
+            <div class="stat-number">@Model.PastEvents</div>
+            <div class="stat-label">Past events</div>
+        </div>
+    </div>
+</div>
+
+@if (Model.Events.Count == 0)
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <h2 class="h4">No events yet</h2>
+            <p class="text-muted">Create your first event to start taking entries.</p>
+            <a class="btn btn-primary" asp-controller="ManageEvents" asp-action="Create">Create an event</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <h2 class="h4 section-title mb-3">Your events</h2>
+            <div class="table-responsive">
+                <table class="table table-raceday align-middle">
+                    <thead>
+                        <tr>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th class="text-center">Enrolments</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var e in Model.Events)
+                        {
+                            <tr>
+                                <td>
+                                    <strong>@e.Name</strong>
+                                    <div class="small text-muted">@e.Location &middot; @e.EventTypeName &middot; @e.DistanceKm.ToString("0.##") km</div>
+                                </td>
+                                <td>
+                                    @e.EventDate.ToString("d MMM yyyy")
+                                    <div class="small text-muted">@e.EventDate.ToString("HH:mm")</div>
+                                </td>
+                                <td class="text-center"><span class="fw-bold fs-5">@e.EnrolmentCount</span></td>
+                                <td class="text-end text-nowrap">
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="ManageEnrolments" asp-action="Index" asp-route-id="@e.EventId">Enrolments</a>
+                                    <a class="btn btn-sm btn-outline-primary" asp-controller="ManageResults" asp-action="Index" asp-route-id="@e.EventId">Results</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <h2 class="h4 section-title mb-3">Coming up</h2>
+            @if (Model.NextUp.Count == 0)
+            {
+                <p class="text-muted">No upcoming events. Time to plan the next one!</p>
+            }
+            else
+            {
+                foreach (var e in Model.NextUp)
+                {
+                    <div class="next-up-item">
+                        <div class="next-up-date">@e.EventDate.ToString("ddd d MMM yyyy") &middot; @e.EventDate.ToString("HH:mm")</div>
+                        <div class="fw-bold">@e.Name</div>
+                        <div class="small text-muted">@e.Location &middot; @e.EnrolmentCount enrolled</div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+}
