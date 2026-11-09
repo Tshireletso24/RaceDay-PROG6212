@@ -1,0 +1,76 @@
+@model ResultsPageViewModel
+@{
+    ViewData["Title"] = "Results";
+}
+
+<div class="mb-3"><a asp-controller="ManageEvents" asp-action="Index" class="text-decoration-none">&larr; All events</a></div>
+<h1 class="section-title mb-1">Results</h1>
+<p class="text-muted mb-3">@Model.Event.Name &middot; @Model.Event.EventDate.ToString("d MMM yyyy")</p>
+
+@if (Model.Event.EventDate > DateTime.Now)
+{
+    <div class="alert alert-info">This event hasn't taken place yet. Results are normally entered once it concludes.</div>
+}
+
+@if (Model.Enrolments.Count == 0)
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <h2 class="h5">No entries to record</h2>
+            <p class="text-muted mb-0">Results can be entered for participants who are enrolled in this event.</p>
+        </div>
+    </div>
+}
+else
+{
+    <p class="text-muted">@Model.Published of @Model.Enrolments.Count results published. Enter a time as hh:mm:ss (for example 01:45:32) and the finishing position, then publish.</p>
+
+    <div class="table-responsive">
+        <table class="table table-raceday align-middle">
+            <thead>
+                <tr>
+                    <th>Participant</th>
+                    <th>Category</th>
+                    <th>Status</th>
+                    <th>Finish time</th>
+                    <th>Position</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Enrolments)
+                {
+                    <tr>
+                        <td class="fw-bold">@e.ParticipantName</td>
+                        <td>@e.CategoryName</td>
+                        <td><partial name="_StatusBadge" model="e.Status" /></td>
+                        @if (e.HasResult)
+                        {
+                            <td class="fw-bold">@e.FinishTime</td>
+                            <td><span class="result-position">@e.FinishPosition</span></td>
+                            <td class="text-end"><span class="status-badge status-confirmed">Published</span></td>
+                        }
+                        else
+                        {
+                            <td>
+                                <input form="result-@e.EnrolmentId" name="FinishTime" class="form-control form-control-sm"
+                                       placeholder="hh:mm:ss" style="min-width:110px" autocomplete="off" />
+                            </td>
+                            <td>
+                                <input form="result-@e.EnrolmentId" name="FinishPosition" type="number" min="1"
+                                       class="form-control form-control-sm" placeholder="1" style="min-width:80px" />
+                            </td>
+                            <td class="text-end">
+                                <form id="result-@e.EnrolmentId" asp-action="Capture" method="post">
+                                    <input type="hidden" name="EnrolmentId" value="@e.EnrolmentId" />
+                                    <input type="hidden" name="EventId" value="@Model.Event.EventId" />
+                                    <button type="submit" class="btn btn-sm btn-primary">Publish</button>
+                                </form>
+                            </td>
+                        }
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
