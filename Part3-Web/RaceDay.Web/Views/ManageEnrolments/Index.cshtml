@@ -1,0 +1,81 @@
+@model EnrolmentsPageViewModel
+@{
+    ViewData["Title"] = "Enrolments";
+}
+
+<div class="mb-3"><a asp-controller="ManageEvents" asp-action="Index" class="text-decoration-none">&larr; All events</a></div>
+<h1 class="section-title mb-1">Enrolments</h1>
+<p class="text-muted mb-4">@Model.Event.Name &middot; @Model.Event.EventDate.ToString("d MMM yyyy")</p>
+
+<div class="row g-3 mb-4">
+    <div class="col-4"><div class="stat-tile"><div class="stat-number">@Model.Confirmed</div><div class="stat-label">Confirmed</div></div></div>
+    <div class="col-4"><div class="stat-tile"><div class="stat-number">@Model.Pending</div><div class="stat-label">Pending</div></div></div>
+    <div class="col-4"><div class="stat-tile"><div class="stat-number">@Model.Cancelled</div><div class="stat-label">Cancelled</div></div></div>
+</div>
+
+@if (Model.Enrolments.Count == 0)
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <h2 class="h5">Nobody has entered yet</h2>
+            <p class="text-muted mb-0">Entries will appear here as participants enrol.</p>
+        </div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-raceday align-middle">
+            <thead>
+                <tr>
+                    <th>Participant</th>
+                    <th>Category</th>
+                    <th>Enrolled</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var e in Model.Enrolments)
+                {
+                    <tr>
+                        <td class="fw-bold">@e.ParticipantName</td>
+                        <td>@e.CategoryName</td>
+                        <td>@e.EnrolmentDate.ToString("d MMM yyyy")</td>
+                        <td><partial name="_StatusBadge" model="e.Status" /></td>
+                        <td class="text-end text-nowrap">
+                            @if (e.Status != "Confirmed")
+                            {
+                                <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@e.EnrolmentId" />
+                                    <input type="hidden" name="eventId" value="@Model.Event.EventId" />
+                                    <input type="hidden" name="status" value="Confirmed" />
+                                    <button type="submit" class="btn btn-sm btn-outline-success">Confirm</button>
+                                </form>
+                            }
+                            @if (e.Status != "Cancelled")
+                            {
+                                <form asp-action="UpdateStatus" method="post" class="d-inline"
+                                      onsubmit="return confirm('Cancel this enrolment?');">
+                                    <input type="hidden" name="id" value="@e.EnrolmentId" />
+                                    <input type="hidden" name="eventId" value="@Model.Event.EventId" />
+                                    <input type="hidden" name="status" value="Cancelled" />
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                                </form>
+                            }
+                            @if (e.Status != "Pending")
+                            {
+                                <form asp-action="UpdateStatus" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@e.EnrolmentId" />
+                                    <input type="hidden" name="eventId" value="@Model.Event.EventId" />
+                                    <input type="hidden" name="status" value="Pending" />
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary">Set pending</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
