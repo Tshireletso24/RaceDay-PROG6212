@@ -16,7 +16,7 @@ public class AccountController : Controller
     public IActionResult Login(string? returnUrl = null)
     {
         if (HttpContext.Session.GetInt32(SessionKeys.UserId) != null)
-            return RedirectToAction("Index", "Home");
+            return RedirectToRoleHome();
 
         return View(new LoginViewModel { ReturnUrl = returnUrl });
     }
@@ -47,7 +47,7 @@ public class AccountController : Controller
         if (!string.IsNullOrEmpty(model.ReturnUrl) && Url.IsLocalUrl(model.ReturnUrl))
             return LocalRedirect(model.ReturnUrl);
 
-        return RedirectToAction("Index", "Home");
+        return RedirectToRoleHome();
     }
 
     // ---------- Register ----------
@@ -56,7 +56,7 @@ public class AccountController : Controller
     public IActionResult Register()
     {
         if (HttpContext.Session.GetInt32(SessionKeys.UserId) != null)
-            return RedirectToAction("Index", "Home");
+            return RedirectToRoleHome();
 
         return View(new RegisterViewModel());
     }
@@ -102,6 +102,12 @@ public class AccountController : Controller
         TempData["Success"] = "You've been logged out. See you at the next start line!";
         return RedirectToAction(nameof(Login));
     }
+
+    /// <summary>Organisers land on their dashboard, Participants on the events page.</summary>
+    private IActionResult RedirectToRoleHome() =>
+        HttpContext.Session.GetString(SessionKeys.Role) == "Organiser"
+            ? RedirectToAction("Index", "Dashboard")
+            : RedirectToAction("Index", "Home");
 
     [HttpGet]
     public IActionResult AccessDenied() => View();

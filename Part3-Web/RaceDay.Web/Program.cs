@@ -1,4 +1,9 @@
+using System.Globalization;
 using RaceDay.Web.Services;
+
+// Use the invariant culture so decimals (21.1) and dates behave the same on every machine and in Docker
+CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
 
 var builder = WebApplication.CreateBuilder(args);
 
