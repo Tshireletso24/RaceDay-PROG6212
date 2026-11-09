@@ -1,0 +1,40 @@
+@model MyResultsViewModel
+@{
+    ViewData["Title"] = "My results";
+}
+
+<h1 class="section-title mb-1">My results</h1>
+<p class="text-muted mb-4">Your race history, newest first.</p>
+
+@if (Model.Results.Count == 0)
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <h2 class="h4">No results yet</h2>
+            <p class="text-muted mb-3">Results appear here once an organiser publishes them after a race.</p>
+            <a class="btn btn-primary" asp-controller="MyEvents" asp-action="Index">See my events</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="row g-3 mb-4">
+        <div class="col-6"><div class="stat-tile"><div class="stat-number">@Model.Results.Count</div><div class="stat-label">Races finished</div></div></div>
+        <div class="col-6"><div class="stat-tile"><div class="stat-number">@Model.Podiums</div><div class="stat-label">Top 3 finishes</div></div></div>
+    </div>
+
+    @foreach (var r in Model.Results)
+    {
+        <div class="next-up-item d-flex flex-wrap justify-content-between align-items-center gap-2">
+            <div>
+                <div class="next-up-date">@r.EventDate.ToString("ddd d MMM yyyy")</div>
+                <div class="fw-bold fs-5">@r.EventName</div>
+                <div class="small text-muted">@r.CategoryName</div>
+            </div>
+            <div class="text-end">
+                <div class="result-position">@Formatting.Ordinal(r.FinishPosition) out of @r.TotalFinishers finishers</div>
+                <div class="small">Finish time <strong>@r.FinishTime</strong></div>
+            </div>
+        </div>
+    }
+}

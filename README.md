@@ -118,3 +118,114 @@ Video demonstration (Part 2)
 Unlisted YouTube video: <!-- INSERT PART 2 YOUTUBE LINK HERE -->
 AI usage disclosure (Part 2)
 This project used AI assistance (Claude) for planning guidance on database design decisions, structuring the API endpoint plan>
+
+
+PART 3
+
+
+RaceDay – Event Management System
+Project Overview
+
+RaceDay is an event management application developed as part of the PROG6212 project. The system provides functionality for users to browse and interact with racing events through a web-based interface.
+
+Technologies Used
+ASP.NET Core MVC
+ASP.NET Core Web API
+C#
+HTML, CSS and JavaScript
+Docker
+Git and GitHub
+Project Structure
+Part2-API/RaceDay.Api – Backend Web API.
+Part3-Web/RaceDay.Web – Frontend MVC web application.
+Running the Application
+1. Run the API
+
+Navigate to the API project:
+
+powershell
+cd Part2-API/RaceDay.Api
+
+
+Start the API:
+
+powershell
+dotnet run --no-launch-profile --urls "http://0.0.0.0:5261"
+
+
+The API listens on port 5261.
+
+2. Run the MVC application using Docker
+
+Navigate to the web project:
+
+powershell
+cd Part3-Web/RaceDay.Web
+
+
+Build the Docker image:
+
+powershell
+docker build -t raceday-web .
+
+
+Run the container:
+
+powershell
+docker run -d --name raceday-web-container -p 8080:8080 raceday-web
+
+
+Access the application:
+
+http://localhost:8080
+
+3. Docker Management Commands
+
+View running containers:
+
+powershell
+docker ps
+
+
+View application logs:
+
+powershell
+docker logs raceday-web-container
+
+
+Stop the container:
+
+powershell
+docker stop raceday-web-container
+
+
+Remove the container:
+
+powershell
+docker rm raceday-web-container
+
+Docker Configuration
+
+The MVC application is containerised using Docker and exposed through port 8080.
+
+The backend API runs separately on port 5261. When running the web application inside Docker, configure its API base URL to use:
+
+text
+http://host.docker.internal:5261
+
+
+The API must listen on an address accessible from Docker, rather than only 127.0.0.1.
+
+Verification
+
+The following checks were performed:
+
+Docker image built successfully.
+MVC container started successfully.
+Container reported that the application was listening on port 8080.
+Windows successfully connected to localhost:8080.
+MVC home page returned HTTP 200 OK.
+API port 5261 was reachable from Windows.
+Author
+
+Developed as part of the PROG6212 academic project.

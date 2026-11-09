@@ -1,0 +1,66 @@
+@model ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+    var initial = string.IsNullOrWhiteSpace(Model.FullName) ? "?" : Model.FullName.Trim().Substring(0, 1).ToUpperInvariant();
+}
+
+<h1 class="section-title mb-4">Profile</h1>
+
+<div class="row g-4">
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                {
+                    <img src="@Model.ProfilePictureUrl" alt="Your profile picture" class="rounded-circle mb-3"
+                         style="width:140px;height:140px;object-fit:cover" />
+                }
+                else
+                {
+                    <div class="rounded-circle mb-3 mx-auto d-flex align-items-center justify-content-center text-white fw-bold"
+                         style="width:140px;height:140px;font-size:3rem;background:linear-gradient(135deg,#0b1f3a,#ff5a1f)">@initial</div>
+                }
+                <div class="fw-bold">@Model.FullName</div>
+                <div class="small text-muted mb-3">@Model.Role</div>
+
+                <form asp-controller="Profile" asp-action="UploadPicture" method="post" enctype="multipart/form-data">
+                    <input type="file" name="picture" class="form-control mb-2" accept="image/png,image/jpeg,image/webp,image/gif" required />
+                    <button type="submit" class="btn btn-outline-primary w-100">Upload new picture</button>
+                    <div class="small text-muted mt-2">JPG, PNG, WebP or GIF, up to 5 MB.</div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="h4 mb-3">Your details</h2>
+
+                <form asp-controller="Profile" asp-action="Index" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-bold"></label>
+                        <input asp-for="FullName" class="form-control" />
+                        <span asp-validation-for="FullName" class="text-danger small"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Email</label>
+                        <input value="@Model.Email" class="form-control" disabled />
+                        <div class="small text-muted">Your email is your login and can't be changed here.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Save changes</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

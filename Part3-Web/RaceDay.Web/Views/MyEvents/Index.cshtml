@@ -1,0 +1,87 @@
+@model MyEventsViewModel
+@{
+    ViewData["Title"] = "My events";
+}
+
+<h1 class="section-title mb-1">My events</h1>
+<p class="text-muted mb-4">Every race you've entered, with its status.</p>
+
+@if (Model.Upcoming.Count == 0 && Model.Past.Count == 0)
+{
+    <div class="card">
+        <div class="card-body text-center py-5">
+            <h2 class="h4">You haven't entered any events yet</h2>
+            <p class="text-muted">Find a race and enter in a few clicks.</p>
+            <a class="btn btn-primary" asp-controller="Home" asp-action="Index">Browse events</a>
+        </div>
+    </div>
+}
+else
+{
+    <p class="small mb-4">
+        <span class="status-badge status-confirmed">Confirmed</span> you're in &nbsp;
+        <span class="status-badge status-pending">Pending</span> waiting for the organiser &nbsp;
+        <span class="status-badge status-cancelled">Cancelled</span> entry cancelled
+    </p>
+
+    <h2 class="h4 mb-3">Upcoming</h2>
+    @if (Model.Upcoming.Count == 0)
+    {
+        <p class="text-muted mb-4">Nothing coming up. <a asp-controller="Home" asp-action="Index">Find your next race.</a></p>
+    }
+    else
+    {
+        <div class="table-responsive mb-4">
+            <table class="table table-raceday align-middle">
+                <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Status</th></tr></thead>
+                <tbody>
+                    @foreach (var en in Model.Upcoming)
+                    {
+                        <tr>
+                            <td class="fw-bold"><a asp-controller="Events" asp-action="Details" asp-route-id="@en.EventId" class="text-decoration-none">@en.EventName</a></td>
+                            <td>@en.EventDate.ToString("ddd d MMM yyyy HH:mm")</td>
+                            <td>@en.CategoryName</td>
+                            <td><span class="status-badge status-@en.Status.ToLowerInvariant()">@en.Status</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+
+    <h2 class="h4 mb-3">Past events</h2>
+    @if (Model.Past.Count == 0)
+    {
+        <p class="text-muted">No past events yet.</p>
+    }
+    else
+    {
+        <div class="table-responsive">
+            <table class="table table-raceday align-middle">
+                <thead><tr><th>Event</th><th>Date</th><th>Category</th><th>Status</th><th>Result</th></tr></thead>
+                <tbody>
+                    @foreach (var en in Model.Past)
+                    {
+                        <tr>
+                            <td class="fw-bold">@en.EventName</td>
+                            <td>@en.EventDate.ToString("d MMM yyyy")</td>
+                            <td>@en.CategoryName</td>
+                            <td><span class="status-badge status-@en.Status.ToLowerInvariant()">@en.Status</span></td>
+                            <td>
+                                @if (en.HasResult)
+                                {
+                                    <span class="result-position">@Formatting.Ordinal(en.FinishPosition!.Value)</span>
+                                    <span class="small text-muted ms-1">@en.FinishTime</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted small">Not published yet</span>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+}
