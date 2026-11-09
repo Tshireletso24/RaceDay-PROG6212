@@ -1,8 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Home";
+    var role = Context.Session.GetString("Role");
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero mb-4">
+    <div class="position-relative">
+        <p class="hero-kicker">South Africa's road events platform</p>
+        <h1>Every race. <span class="accent">Every runner.</span></h1>
+        <p class="lead mb-4">Find your next run, walk or ride, enter in seconds, and track every finish.</p>
+
+        @if (role == null)
+        {
+            <a class="btn btn-primary btn-lg me-2" asp-controller="Account" asp-action="Register">Get started</a>
+            <a class="btn btn-outline-light btn-lg" asp-controller="Account" asp-action="Login">Log in</a>
+        }
+        else if (role == "Organiser")
+        {
+            <a class="btn btn-primary btn-lg" href="~/Dashboard">Go to your dashboard</a>
+        }
+        else
+        {
+            <a class="btn btn-primary btn-lg me-2" href="~/MyEvents">My events</a>
+            <a class="btn btn-outline-light btn-lg" href="~/MyResults">My results</a>
+        }
+    </div>
+</section>
+
+<p class="text-muted">Upcoming events will appear here once we build the events pages.</p>

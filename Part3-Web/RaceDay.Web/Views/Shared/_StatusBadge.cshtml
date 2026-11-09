@@ -1,0 +1,3 @@
+@* Colour-coded enrolment status: green = Confirmed, amber = Pending, red = Cancelled *@
+@model string
+<span class="status-badge status-@((Model ?? "").ToLowerInvariant())">@Model</span>

@@ -1,47 +1,115 @@
-﻿<!DOCTYPE html>
+@{
+    var role = Context.Session.GetString("Role");
+    var fullName = Context.Session.GetString("FullName") ?? "";
+    var pictureUrl = Context.Session.GetString("PictureUrl");
+    var loggedIn = role != null;
+    var isOrganiser = role == "Organiser";
+    var controller = (ViewContext.RouteData.Values["controller"]?.ToString() ?? "").ToLowerInvariant();
+    string Active(params string[] names) => names.Contains(controller) ? "active" : "";
+    var firstName = fullName.Split(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault() ?? "";
+    var initial = firstName.Length > 0 ? firstName.Substring(0, 1).ToUpperInvariant() : "?";
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - RaceDay.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] – RaceDay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/RaceDay.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">RaceDay.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-raceday">
+            <div class="container">
+                <a class="navbar-brand" href="~/"><span class="brand-mark">&#9654;&#9654;</span>RACE<span class="brand-accent">DAY</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+                        aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav me-auto">
+                        @if (!loggedIn)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("home", "events")" href="~/">Events</a></li>
+                        }
+                        else if (isOrganiser)
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("dashboard")" href="~/Dashboard">Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("manageevents", "managecategories", "manageenrolments", "manageresults")" href="~/ManageEvents">Manage Events</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("profile")" href="~/Profile">Profile</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link @Active("home", "events")" href="~/">Events</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("myevents")" href="~/MyEvents">My Events</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("myresults")" href="~/MyResults">My Results</a></li>
+                            <li class="nav-item"><a class="nav-link @Active("profile")" href="~/Profile">Profile</a></li>
+                        }
+                    </ul>
+
+                    <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
+                        @if (loggedIn)
+                        {
+                            <li class="nav-item d-flex align-items-center gap-2 text-white">
+                                @if (!string.IsNullOrEmpty(pictureUrl))
+                                {
+                                    <img src="@pictureUrl" class="nav-avatar" alt="" />
+                                }
+                                else
+                                {
+                                    <span class="nav-avatar nav-avatar-initial">@initial</span>
+                                }
+                                <span class="fw-semibold">Hi, @firstName</span>
+                                <span class="role-pill">@role</span>
+                            </li>
+                            <li class="nav-item ms-lg-2">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-outline-light">Log out</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="Login">Log in</a></li>
+                            <li class="nav-item"><a class="btn btn-primary btn-sm" asp-controller="Account" asp-action="Register">Sign up</a></li>
+                        }
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - RaceDay.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <main role="main" class="container py-4">
+        @if (TempData["Success"] is string successMessage)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @successMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] is string errorMessage)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @errorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @RenderBody()
+    </main>
+
+    <footer class="footer">
+        <div class="container d-flex flex-wrap justify-content-between">
+            <span>&copy; @DateTime.Now.Year RaceDay &ndash; built for South African runners, walkers and cyclists</span>
+            <span>Every race. Every runner.</span>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>

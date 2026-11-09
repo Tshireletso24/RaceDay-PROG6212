@@ -1,31 +1,215 @@
-html {
-  font-size: 14px;
+/* RaceDay brand: deep navy, energetic orange, lime accents */
+:root {
+    --rd-navy: #0b1f3a;
+    --rd-navy-2: #123361;
+    --rd-orange: #ff5a1f;
+    --rd-orange-dark: #e04a12;
+    --rd-lime: #b8f13c;
+    --rd-bg: #f4f6fa;
+    --rd-text: #14213d;
+    --rd-muted: #6b7a90;
+    --rd-radius: 14px;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
+html { font-size: 16px; position: relative; min-height: 100%; }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Barlow', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background: var(--rd-bg);
+    color: var(--rd-text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+main { flex: 1 0 auto; }
+
+h1, h2, h3, h4, h5, .navbar-brand, .auth-title, .section-title {
+    font-family: 'Barlow Condensed', 'Arial Narrow', sans-serif;
+    font-weight: 700;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+}
+a { color: var(--rd-orange-dark); }
+a:hover { color: var(--rd-orange); }
+
+/* ---------- Buttons ---------- */
+.btn { border-radius: 10px; font-weight: 600; }
+.btn-primary {
+    --bs-btn-bg: var(--rd-orange);
+    --bs-btn-border-color: var(--rd-orange);
+    --bs-btn-color: #fff;
+    --bs-btn-hover-bg: var(--rd-orange-dark);
+    --bs-btn-hover-border-color: var(--rd-orange-dark);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-active-bg: var(--rd-orange-dark);
+    --bs-btn-active-border-color: var(--rd-orange-dark);
+    --bs-btn-active-color: #fff;
+    --bs-btn-disabled-bg: var(--rd-orange);
+    --bs-btn-disabled-border-color: var(--rd-orange);
+}
+.btn-outline-primary {
+    --bs-btn-color: var(--rd-orange-dark);
+    --bs-btn-border-color: var(--rd-orange);
+    --bs-btn-hover-bg: var(--rd-orange);
+    --bs-btn-hover-border-color: var(--rd-orange);
+    --bs-btn-hover-color: #fff;
+    --bs-btn-active-bg: var(--rd-orange);
+    --bs-btn-active-border-color: var(--rd-orange);
+    --bs-btn-active-color: #fff;
+}
+.form-control:focus, .form-select:focus {
+    border-color: var(--rd-orange);
+    box-shadow: 0 0 0 .2rem rgba(255, 90, 31, .2);
+}
+.btn:focus-visible { box-shadow: 0 0 0 .2rem rgba(255, 90, 31, .35); }
+
+/* ---------- Navbar ---------- */
+.navbar-raceday {
+    background: linear-gradient(90deg, var(--rd-navy), var(--rd-navy-2));
+    border-bottom: 4px solid var(--rd-orange);
+}
+.navbar-raceday .navbar-brand {
+    color: #fff;
+    font-size: 1.7rem;
+    font-weight: 800;
+}
+.navbar-raceday .brand-mark { color: var(--rd-orange); margin-right: .4rem; font-size: 1.1rem; }
+.navbar-raceday .brand-accent { color: var(--rd-orange); }
+.navbar-raceday .nav-link {
+    color: rgba(255, 255, 255, .85);
+    font-weight: 600;
+    padding-left: .9rem;
+    padding-right: .9rem;
+}
+.navbar-raceday .nav-link:hover { color: #fff; }
+.navbar-raceday .nav-link.active { color: #fff; box-shadow: inset 0 -3px 0 var(--rd-lime); }
+.navbar-raceday .navbar-toggler { border-color: rgba(255, 255, 255, .5); }
+.navbar-raceday .navbar-toggler-icon { filter: invert(1); }
+
+.nav-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--rd-lime);
+}
+.nav-avatar-initial {
+    display: inline-flex; align-items: center; justify-content: center;
+    background: var(--rd-orange); color: #fff; font-weight: 700;
+}
+.role-pill {
+    background: var(--rd-lime);
+    color: var(--rd-navy);
+    font-weight: 700;
+    border-radius: 999px;
+    padding: .1rem .6rem;
+    font-size: .72rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+/* ---------- Hero ---------- */
+.hero {
+    background: linear-gradient(135deg, var(--rd-navy) 0%, var(--rd-navy-2) 60%, #1b4a8a 100%);
+    color: #fff;
+    border-radius: var(--rd-radius);
+    padding: 3.5rem 2rem;
+    position: relative;
+    overflow: hidden;
+}
+/* faint "track lane" stripes */
+.hero::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(115deg, transparent 0 38px, rgba(255, 255, 255, .05) 38px 40px);
+    pointer-events: none;
+}
+.hero h1 { font-size: clamp(2.4rem, 6vw, 4.2rem); line-height: 1; font-weight: 800; }
+.hero .accent { color: var(--rd-orange); }
+.hero-kicker {
+    color: var(--rd-lime);
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-size: .85rem;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/* ---------- Cards, tiles, tables ---------- */
+.card {
+    border: 0;
+    border-radius: var(--rd-radius);
+    box-shadow: 0 6px 20px rgba(11, 31, 58, .08);
+}
+.event-banner {
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+    border-radius: var(--rd-radius) var(--rd-radius) 0 0;
+}
+.event-banner.placeholder {
+    background: linear-gradient(135deg, var(--rd-navy), var(--rd-orange));
+    display: flex; align-items: center; justify-content: center;
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.6rem; font-weight: 800;
+    letter-spacing: .06em;
+}
+.stat-tile {
+    background: #fff;
+    border-radius: var(--rd-radius);
+    padding: 1.1rem 1.25rem;
+    box-shadow: 0 6px 20px rgba(11, 31, 58, .08);
+    border-left: 6px solid var(--rd-orange);
+}
+.stat-tile .stat-number { font-family: 'Barlow Condensed', sans-serif; font-size: 2.4rem; font-weight: 800; line-height: 1; }
+.stat-tile .stat-label { color: var(--rd-muted); font-weight: 600; text-transform: uppercase; font-size: .8rem; letter-spacing: .06em; }
+
+.table-raceday thead th {
+    background: var(--rd-navy);
+    color: #fff;
+    border: 0;
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+.table-raceday { background: #fff; border-radius: var(--rd-radius); overflow: hidden; }
+
+.section-title { color: var(--rd-navy); border-left: 6px solid var(--rd-orange); padding-left: .6rem; }
+
+/* ---------- Enrolment status (colour-coded) ---------- */
+.status-badge {
+    display: inline-block;
+    padding: .25rem .7rem;
+    border-radius: 999px;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: #fff;
+}
+.status-confirmed { background: #1f9d55; }
+.status-pending { background: #f5a524; color: #1a1a1a; }
+.status-cancelled { background: #c0392b; }
+
+/* ---------- Auth pages ---------- */
+.auth-wrap { display: flex; justify-content: center; padding: 1.5rem 0; }
+.auth-card {
+    background: #fff;
+    border-radius: var(--rd-radius);
+    box-shadow: 0 10px 30px rgba(11, 31, 58, .12);
+    padding: 2rem;
+    width: 100%;
+    max-width: 480px;
+    border-top: 6px solid var(--rd-orange);
+}
+.auth-title { color: var(--rd-navy); font-size: 2rem; margin-bottom: .25rem; }
+
+.alert { border-radius: 10px; border: 0; }
+
+/* ---------- Footer ---------- */
+.footer {
+    background: var(--rd-navy);
+    color: rgba(255, 255, 255, .7);
+    padding: 1rem 0;
+    margin-top: 3rem;
+    font-size: .9rem;
 }
