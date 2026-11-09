@@ -1,145 +1,225 @@
-# RaceDay – PROG6212 Portfolio of Evidence
+RaceDay – PROG6212 Portfolio of Evidence
+System Description
 
-## System Description
+RaceDay is a full-stack, web-based event management system developed for the South African road running, walking, and cycling community.
 
-RaceDay is a full-stack, web-based event management system built for the South African road running, walking, and cycling community. The platform allows Event Organisers to create and manage events, categories, and participant results, while Participants can browse upcoming events, enter events, and track their personal performance history.
+The platform allows Event Organisers to create and manage events, categories, participant enrolments, and results. Participants can browse upcoming events, enter events, and track their personal performance history.
 
 This repository contains the Portfolio of Evidence (POE), submitted progressively across three parts:
 
-- **Part 1** – System planning: Entity Relationship Diagram, API endpoint plan, and SQL database script.
-- **Part 2** – RESTful API built in C# (ASP.NET Core), connected to the database, with unit tests and CI/CD.
-- **Part 3** – MVC web application consuming the API, with Azure Blob Storage integration and Docker containerisation.
-
-## User Roles
+Part 1 – System Planning: Entity Relationship Diagram (ERD), API endpoint plan, and SQL database script.
+Part 2 – RESTful API: ASP.NET Core Web API built in C#, connected to SQL Server, with unit tests and CI/CD.
+Part 3 – MVC Web Application: ASP.NET Core MVC application consuming the API, Azure Blob Storage integration, and Docker containerisation.
+User Roles
 
 The system supports two distinct user roles:
 
-- **Organiser** – Can create, edit, and delete events, manage event categories, capture participant results, and view all event enrolments.
-- **Participant** – Can create an account, browse events, enter an event by selecting a category, view their own enrolments, and track their personal results.
+Organiser
+Create, edit, and delete events.
+Manage event categories.
+View participant enrolments for their events.
+Confirm or cancel enrolments.
+Capture participant results.
+Participant
+Register and log in.
+Browse upcoming events.
+Enter events by selecting a category.
+View personal enrolments.
+Track personal results and performance history.
+Manage their profile.
+Part 1 – System Planning and Database
 
-## Part 1 – System Planning and Database
+All Part 1 planning documents are located in the /docs folder:
 
-All Part 1 planning documents are located in the [`/docs`](./docs) folder:
+RaceDay_ERD.png – Entity Relationship Diagram.
+RaceDay EndPoint.docx – API Endpoint Plan.
+RaceDayDB.sql – SQL database creation and seed script.
+Running the SQL Script
+Open SQL Server Management Studio (SSMS).
+Open docs/RaceDayDB.sql.
+Execute the CREATE DATABASE RaceDayDB; statement on its own.
+Execute the remainder of the script to create all tables and seed sample data.
+Part 1 CI/CD
 
-- `RaceDay_ERD.png` – Entity Relationship Diagram
-- `RaceDay EndPoint.docx` – API Endpoint Plan
-- `RaceDayDB.sql` – SQL database creation and seed script
+A GitHub Actions workflow validates the repository structure, confirming that the /docs folder exists and contains the required files.
 
-### Running the SQL Script
+Latest successful build:
 
-1. Open SQL Server Management Studio (SSMS).
-2. Open `docs/RaceDayDB.sql`.
-3. Execute the `CREATE DATABASE RaceDayDB;` statement on its own.
-4. Execute the remainder of the script to create all tables and seed sample data.
+!Part 1 CI/CD Green Build
 
-## CI/CD
+Part 1 Video Demonstration
 
-A GitHub Actions workflow validates the repository structure, confirming the `/docs` folder exists and contains the required files.
+Unlisted YouTube video:
 
-**Latest successful build:**
-
-![CI/CD Green Build](docs/ci-success.png)
-
-## Video Demonstration
-
-**Part 1 walkthrough (unlisted YouTube video):** https://youtube.com/shorts/AEKODOYWIJU?si=fPHDPaaOuJMtye71
+https://youtube.com/shorts/AEKODOYWIJU?si=fPHDPaaOuJMtye71
 
 The video covers:
-- The ERD and the reasoning behind each entity and relationship
-- The API endpoint plan and key design decisions (role enforcement, resource nesting)
-- A live run of the SQL script in SSMS, from a clean database through to seeded sample data
 
-## AI Usage Disclosure
+The ERD and reasoning behind each entity and relationship.
+The API endpoint plan and key design decisions.
+Role enforcement and resource nesting.
+Execution of the SQL script in SSMS, from database creation to seeded sample data.
+Part 1 AI Usage Disclosure
 
 This project used AI assistance (Claude) for planning guidance on database design decisions, structuring the API endpoint plan, and debugging SQL Server errors encountered while writing and testing the database script. All code was typed and tested independently by the student in SSMS.
 
-
 Part 2 – RESTful API
-The RaceDay API is built with ASP.NET Core Web API (.NET 10) and C#. It uses Entity Framework Core (Code-First) with SQL Server, server-side sessions for authentication, BCrypt for password hashing, and Swagger UI for live documentation. The project lives in `/Part2-API`.
-Project structure
-```
+
+The RaceDay API is built using ASP.NET Core Web API (.NET 10) and C#.
+
+It uses:
+
+Entity Framework Core (Code-First).
+SQL Server.
+Server-side sessions for authentication.
+BCrypt for password hashing.
+Swagger UI for API documentation.
+xUnit for automated testing.
+
+The project is located in /Part2-API.
+
+Project Structure
+text
 Part2-API/
 ├── RaceDay.slnx
-├── RaceDay.Api/          Controllers, Models, Dtos, Data (DbContext), Security, Migrations
-└── RaceDay.Api.Tests/    xUnit tests (in-memory API and database)
-```
-Roles
-Organiser – creates, edits and deletes their own events, manages categories, views enrolments for their events, confirms or cancels enrolments, and captures results.
-Participant – browses events, enrols in an event by choosing a category, views their own enrolments and results, and manages their profile.
-Role rules are enforced on the server for every protected endpoint: 401 Unauthorized when not logged in, 403 Forbidden for the wrong role, or for an Organiser acting on an event they do not own.
-Setup and run
-Prerequisites: .NET 10 SDK and SQL Server (Express or LocalDB).
-Clone the repository and open a terminal in `Part2-API/RaceDay.Api`.
-Open `appsettings.json` and set `ConnectionStrings:DefaultConnection` so `Server=` matches your SQL Server instance (for example `localhost\\SQLEXPRESS` or `(localdb)\\MSSQLLocalDB`). The database is called `RaceDayApiDB`.
-Create the database from the migration:
-```
-   dotnet tool install --global dotnet-ef
-   dotnet ef database update
-   ```
-Run the API:
-```
-   dotnet run --launch-profile http
-   ```
-Open Swagger at http://localhost:5261/swagger.
-Registering an Organiser requires the invite code from `appsettings.json` (`OrganiserInviteCode`, currently `RACEDAY-ORG-2026`). This stops Participants from giving themselves Organiser access. It is a demo value, and a real deployment would keep it in a secret store.
+├── RaceDay.Api/
+│   ├── Controllers/
+│   ├── Models/
+│   ├── Dtos/
+│   ├── Data/
+│   ├── Security/
+│   └── Migrations/
+└── RaceDay.Api.Tests/
+
+Role-Based Access Control
+
+Role rules are enforced server-side for protected endpoints.
+
+401 Unauthorized – User is not authenticated.
+403 Forbidden – User does not have the required role or attempts to manage an event they do not own.
+Setup and Run
+
+Prerequisites:
+
+.NET 10 SDK.
+SQL Server Express or LocalDB.
+Clone the repository.
+Open a terminal in Part2-API/RaceDay.Api.
+Configure ConnectionStrings:DefaultConnection in appsettings.json to match your SQL Server instance.
+Create the database using Entity Framework Core migrations:
+powershell
+dotnet tool install --global dotnet-ef
+dotnet ef database update
+
+Start the API:
+powershell
+dotnet run --launch-profile http
+
+
+Swagger documentation:
+
+http://localhost:5261/swagger
+
+The API database is named RaceDayApiDB.
+
 Authentication
-`POST /api/auth/register` stores a BCrypt hash of the password, never the password itself.
-`POST /api/auth/login` starts a server-side session holding the user ID and role.
-`POST /api/auth/logout` clears the session.
-Swagger keeps the session cookie, so you can log in once and then try the protected endpoints.
-Endpoints
+POST /api/auth/register – Registers a user and stores a BCrypt password hash.
+POST /api/auth/login – Starts a server-side session.
+POST /api/auth/logout – Ends the current session.
+
+Swagger maintains the session cookie, allowing authenticated requests to protected endpoints.
+
+Organiser registration requires an invite code configured through OrganiserInviteCode. The demonstration value should be configured securely and must not be treated as a production secret.
+
+API Endpoints
 Area	Endpoints
-Auth	`POST /api/auth/register`, `/login`, `/logout`
-Profile	`GET`, `PUT /api/users/me`
-Events	`GET /api/events`, `GET /api/events/{id}`, `POST`, `PUT`, `DELETE` (Organiser)
-Categories	`GET`, `POST /api/events/{eventId}/categories`, `PUT`, `DELETE /api/categories/{id}`
-Enrolments	`POST /api/enrolments`, `GET /api/enrolments/me`, `GET /api/events/{eventId}/enrolments`, `PUT /api/enrolments/{id}/status`
-Results	`POST /api/results`, `GET /api/results/me`
-Lookup	`GET /api/eventtypes`
-Unit tests
-```
+Authentication	POST /api/auth/register, /login, /logout
+Profile	GET, PUT /api/users/me
+Events	GET /api/events, GET /api/events/{id}, POST, PUT, DELETE
+Categories	GET, POST /api/events/{eventId}/categories, PUT, DELETE /api/categories/{id}
+Enrolments	POST /api/enrolments, GET /api/enrolments/me, GET /api/events/{eventId}/enrolments, PUT /api/enrolments/{id}/status
+Results	POST /api/results, GET /api/results/me
+Lookup	GET /api/eventtypes
+Unit Tests
+
+Run the automated tests:
+
+powershell
 cd Part2-API
 dotnet test
-```
-There are 64 tests covering registration and login, event management by Organisers, role-based rejection (401 and 403), enrolments being recorded correctly, and results. Tests run against an in-memory database, so they never touch the real one.
-CI/CD
-The workflow `.github/workflows/dotnet-ci.yml` builds the solution and runs all unit tests on every push.
+
+
+The project contains 64 unit tests covering:
+
+Registration and login.
+Event management by Organisers.
+Role-based access restrictions.
+Enrolment processing.
+Results management.
+
+Tests use an in-memory database and do not modify the actual SQL Server database.
+
+Part 2 CI/CD
+
+The GitHub Actions workflow .github/workflows/dotnet-ci.yml builds the solution and executes the unit tests on every push.
+
 Latest successful build:
- ![Part 2 CI](docs/ci-part2-success.png
-Deviations from the Part 1 plan
+
+!Part 2 CI
+
+Deviations from the Part 1 Plan
 Change	Reason
-`Status` column added to `Enrolments` (Pending, Confirmed, Cancelled)	Needed for the colour-coded enrolment statuses in Part 3
-New endpoint `PUT /api/enrolments/{id}/status`	Lets Organisers confirm or cancel enrolments
-`organiserCode` added to the register request	Prevents users from self-registering as Organisers
-`GET /api/events` accepts optional `eventTypeId`, `includePast` and `mine` query parameters	Filtering and the Organiser dashboard
-Extra status codes (e.g. 409 on duplicate results or categories with enrolments)	Safer handling of conflicts
-Part 2 database is named `RaceDayApiDB` (created by the EF Core migration)	Keeps the Part 1 `RaceDayDB` script intact
-Video demonstration (Part 2)
-Unlisted YouTube video: <!-- INSERT PART 2 YOUTUBE LINK HERE -->
-AI usage disclosure (Part 2)
-This project used AI assistance (Claude) for planning guidance on database design decisions, structuring the API endpoint plan>
+Status column added to Enrolments	Supports Pending, Confirmed, and Cancelled statuses.
+PUT /api/enrolments/{id}/status	Allows Organisers to confirm or cancel enrolments.
+organiserCode added to registration	Prevents unrestricted Organiser registration.
+Additional event query parameters	Supports event filtering and Organiser dashboards.
+Additional HTTP status codes	Provides safer conflict handling.
+Database named RaceDayApiDB	Keeps the original Part 1 RaceDayDB script intact.
+Part 2 Video Demonstration
 
+Unlisted YouTube video:
 
-PART 3
+[Insert Part 2 YouTube link here]
 
+Part 2 AI Usage Disclosure
 
-RaceDay – Event Management System
-Project Overview
+AI assistance (Claude) was used for planning guidance, debugging, and development support. Implementation and testing were carried out as part of the student's project work.
 
-RaceDay is an event management application developed as part of the PROG6212 project. The system provides functionality for users to browse and interact with racing events through a web-based interface.
+Part 3 – MVC Web Application and Docker
+
+Part 3 introduces the ASP.NET Core MVC web application, which consumes the RaceDay RESTful API.
+
+The MVC application provides the user-facing interface through which Organisers and Participants interact with the system.
+
+The project is located in /Part3-Web.
 
 Technologies Used
-ASP.NET Core MVC
-ASP.NET Core Web API
-C#
-HTML, CSS and JavaScript
-Docker
-Git and GitHub
+ASP.NET Core MVC.
+ASP.NET Core Web API.
+C#.
+HTML, CSS and JavaScript.
+Azure Blob Storage integration.
+Docker.
+Git and GitHub.
 Project Structure
-Part2-API/RaceDay.Api – Backend Web API.
-Part3-Web/RaceDay.Web – Frontend MVC web application.
-Running the Application
-1. Run the API
+text
+Part3-Web/
+└── RaceDay.Web/
+    ├── Controllers/
+    ├── Models/
+    ├── Views/
+    ├── wwwroot/
+    ├── Dockerfile
+    └── Program.cs
+
+Running the Application Locally
+
+Prerequisites:
+
+.NET 10 SDK.
+SQL Server.
+Docker Desktop (for containerised deployment).
+1. Start the API
 
 Navigate to the API project:
 
@@ -147,7 +227,7 @@ powershell
 cd Part2-API/RaceDay.Api
 
 
-Start the API:
+Start the API using:
 
 powershell
 dotnet run --no-launch-profile --urls "http://0.0.0.0:5261"
@@ -155,31 +235,45 @@ dotnet run --no-launch-profile --urls "http://0.0.0.0:5261"
 
 The API listens on port 5261.
 
-2. Run the MVC application using Docker
+2. Build the Docker Image
 
-Navigate to the web project:
+Open another PowerShell terminal and navigate to:
 
 powershell
 cd Part3-Web/RaceDay.Web
 
 
-Build the Docker image:
+Build the image:
 
 powershell
 docker build -t raceday-web .
 
-
-Run the container:
-
+3. Run the Docker Container
 powershell
 docker run -d --name raceday-web-container -p 8080:8080 raceday-web
 
 
-Access the application:
+The MVC application is accessible at:
 
 http://localhost:8080
 
-3. Docker Management Commands
+Docker Configuration
+
+The RaceDay MVC application is containerised using Docker.
+
+The container exposes port 8080, while the backend API runs separately on port 5261.
+
+When the MVC application runs inside Docker Desktop on Windows, its API base URL should use:
+
+text
+http://host.docker.internal:5261
+
+
+The API must listen on an interface accessible from Docker rather than being restricted to 127.0.0.1.
+
+This configuration allows the MVC container to communicate with the API running on the Windows host.
+
+Docker Management Commands
 
 View running containers:
 
@@ -193,6 +287,12 @@ powershell
 docker logs raceday-web-container
 
 
+Check port mappings:
+
+powershell
+docker port raceday-web-container
+
+
 Stop the container:
 
 powershell
@@ -204,28 +304,63 @@ Remove the container:
 powershell
 docker rm raceday-web-container
 
-Docker Configuration
+Docker Verification
 
-The MVC application is containerised using Docker and exposed through port 8080.
+The following checks were successfully performed:
 
-The backend API runs separately on port 5261. When running the web application inside Docker, configure its API base URL to use:
+Verification	Result
+Docker image build	Successful
+MVC container startup	Successful
+Application listening on port 8080	Confirmed
+Docker port mapping	Confirmed
+Windows connection to localhost:8080	Successful
+MVC home page HTTP response	HTTP 200 OK
+API port reachable from Windows	Successful
+
+The container logs confirmed:
 
 text
-http://host.docker.internal:5261
+Now listening on: http://[::]:8080
+Application started.
+Hosting environment: Production
+Content root path: /app
 
 
-The API must listen on an address accessible from Docker, rather than only 127.0.0.1.
+The MVC home page returned:
 
-Verification
+text
+HTTP/1.1 200 OK
 
-The following checks were performed:
 
-Docker image built successfully.
-MVC container started successfully.
-Container reported that the application was listening on port 8080.
-Windows successfully connected to localhost:8080.
-MVC home page returned HTTP 200 OK.
-API port 5261 was reachable from Windows.
+Note: Successful API communication from inside the Docker container, including login and event retrieval, must be verified separately before claiming complete end-to-end Docker functionality.
+
+Part 3 CI/CD
+
+Latest successful build:
+
+[Insert Part 3 GitHub Actions build evidence here.]
+
+Part 3 Video Demonstration
+
+Unlisted YouTube video:
+
+[Insert Part 3 YouTube link here]
+
+Part 3 AI Usage Disclosure
+
+AI assistance was used for troubleshooting Docker configuration, understanding container networking, and improving project documentation. Application configuration and testing were performed as part of the student's development work.
+
+Repository and Submission Information
+
+This repository contains the complete RaceDay Portfolio of Evidence for PROG6212.
+
+It includes:
+
+Part 1 system planning and database documentation.
+Part 2 RESTful API and automated tests.
+Part 3 MVC web application and Docker configuration.
+GitHub Actions CI/CD workflows.
+Supporting documentation and demonstration evidence.
 Author
 
 Developed as part of the PROG6212 academic project.
